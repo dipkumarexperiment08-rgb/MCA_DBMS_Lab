@@ -1,0 +1,129 @@
+--LAB-30--
+
+
+--A--
+
+--1)
+
+
+DECLARE @N1 INT , @N2 INT
+BEGIN TRY
+SET @N1 = 8
+SET @N2 = @N1/0
+END TRY
+
+BEGIN CATCH
+
+PRINT 'DEVIDE BY ZERO VEXCEPTION OCCURED'
+END CATCH
+
+
+--2)
+
+DECLARE @N VARCHAR(10) , @N3 INT
+BEGIN TRY
+SET @N = 'JAHFC'
+
+SET @N3 = @N/@N3
+END TRY
+
+BEGIN CATCH
+PRINT 'CANNOT CONVERT STRING TO INT'
+END CATCH
+
+
+--3)
+DECLARE @N4 VARCHAR(10) , @N INT, @RESULT INT
+
+BEGIN TRY
+	SET @N4 = 'JAHFC'
+	SET @N = 2
+	SET @RESULT = @N+@N4
+	PRINT CAST(@RESULT AS VARCHAR(20))
+END TRY
+
+BEGIN CATCH
+	PRINT 'CANNOT CONVERT STRING TO INT'
+END CATCH
+
+END
+
+
+--4)
+
+CREATE TABLE STUDENT_INFORMATION
+(
+RNO INT PRIMARY KEY,
+NAME VARCHAR(50),
+SPI INT
+)
+
+
+BEGIN TRY
+INSERT INTO STUDENT_INFORMATION VALUES(NULL , 'DEEP' , 9.5)
+END TRY
+
+BEGIN CATCH
+SELECT
+ERROR_MESSAGE() AS ERRORMESSAGE,
+ERROR_NUMBER() AS ERROR_NUMBER,
+ERROR_SEVERITY() AS EERROR_SEVERITY,
+ERROR_STATE() AS ERROR_STATE
+
+END CATCH
+
+--5)
+select *from student 
+
+CREATE PROCEDURE check_rno 
+@rno INT 
+As
+begin 
+       if not exists (select * from student where stdid=@rno)
+	          throw 50001,'this roll number is not available',1
+	   else 
+	       print 'roll number is present'
+end 
+
+check_rno  1101
+
+
+--6)
+
+CREATE PROCEDURE CHECK_SALARY
+@EID INT,
+@SALARY INT
+AS
+BEGIN
+	IF @SALARY <= 0
+		THROW 50002, 'THIS SALARY IS IN NEGATIVE OR ZERO',1
+	ELSE
+		UPDATE EMPLOYEE
+		SET SALARY = @SALARY
+		WHERE EID = @EID
+END
+
+EXEC CHECK_SALARY 101,10000
+
+
+
+
+--7)
+SELECT * FROM RESULT
+BEGIN TRY
+    INSERT INTO RESULT (RESULTID, RNO, SPI)
+    VALUES (101, 9999, 85.5, 'A');
+    
+    PRINT 'Result inserted successfully.'
+END TRY
+BEGIN CATCH
+    IF ERROR_NUMBER() = 547
+    BEGIN
+        PRINT 'Foreign Key Violation Error: The referenced parent record (such as Student ID) does not exist.';
+    END
+    ELSE
+    BEGIN
+        PRINT 'An unexpected error occurred.';
+    END
+    PRINT 'Error Message: ' + ERROR_MESSAGE();
+END CATCH;
